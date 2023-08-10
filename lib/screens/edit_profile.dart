@@ -60,7 +60,7 @@ class _EditProfileState extends State<EditProfile> {
           children: [
             Center(
               child: GestureDetector(
-                onTap: () => viewModel.pickImage(),
+                onTap: () => viewModel.pickImage(context: context),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,

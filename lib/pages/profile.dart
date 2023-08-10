@@ -60,7 +60,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('WOOBLE'),
+        title: Text('Green Horizon'),
         actions: [
           widget.profileId == firebaseAuth.currentUser!.uid
               ? Center(

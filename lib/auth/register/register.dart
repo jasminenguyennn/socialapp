@@ -30,7 +30,7 @@ class _RegisterState extends State<Register> {
           children: [
             SizedBox(height: MediaQuery.of(context).size.height / 10),
             Text(
-              'Welcome to Wooble\nCreate a new account and connect with friends',
+              'Welcome to Green Horizon\nCreate a new account and connect with friends',
               style: GoogleFonts.nunitoSans(
                 fontWeight: FontWeight.bold,
                 fontSize: 25.0,

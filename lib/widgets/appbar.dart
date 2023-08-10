@@ -3,7 +3,7 @@ import 'package:ionicons/ionicons.dart';
 
 AppBar header(context) {
   return AppBar(
-    title: Text('Wooble'),
+    title: Text('Green Horizon'),
     centerTitle: true,
     actions: [Padding(
       padding: const EdgeInsets.only(right:20.0),

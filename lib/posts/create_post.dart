@@ -41,7 +41,7 @@ class _CreatePostState extends State<CreatePost> {
                 Navigator.pop(context);
               },
             ),
-            title: Text('WOOBLE'.toUpperCase()),
+            title: Text('Green Horizon'.toUpperCase()),
             centerTitle: true,
             actions: [
               GestureDetector(
@@ -217,7 +217,7 @@ class _CreatePostState extends State<CreatePost> {
                 title: Text('Camera'),
                 onTap: () {
                   Navigator.pop(context);
-                  viewModel.pickImage(camera: true);
+                  viewModel.pickImage(camera: true, context: context);
                 },
               ),
               ListTile(
@@ -225,7 +225,7 @@ class _CreatePostState extends State<CreatePost> {
                 title: Text('Gallery'),
                 onTap: () {
                   Navigator.pop(context);
-                  viewModel.pickImage();
+                  viewModel.pickImage(context: context);
                 },
               ),
             ],

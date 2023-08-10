@@ -3,23 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>780820743732-sa6kk1rg2i8pk9m1j6fdf9pdv7tb6qhr.apps.googleusercontent.com</string>
+	<string>176366182055-dbvhocid0oodoeu5hj3mifv3djclia9t.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.780820743732-sa6kk1rg2i8pk9m1j6fdf9pdv7tb6qhr</string>
+	<string>com.googleusercontent.apps.176366182055-dbvhocid0oodoeu5hj3mifv3djclia9t</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>780820743732-h8kvhuspqptk47fvvjih14m7qe4co2sh.apps.googleusercontent.com</string>
+	<string>176366182055-ajl38atebqtrn4m1erd21buu7nhaaggi.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCJapSwLL-Vz83bIh6sxjfpj4ff6-FbS8Y</string>
+	<string>AIzaSyD87TTXGHMQYf2GqQSoGWxc2gVY4GaBZCw</string>
 	<key>GCM_SENDER_ID</key>
-	<string>780820743732</string>
+	<string>176366182055</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.socialMediaApp</string>
+	<string>com.greenhorizon.socialmediaapp</string>
 	<key>PROJECT_ID</key>
-	<string>social-app-e1319</string>
+	<string>socialmediaapp-c2f79</string>
 	<key>STORAGE_BUCKET</key>
-	<string>social-app-e1319.appspot.com</string>
+	<string>socialmediaapp-c2f79.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:780820743732:ios:4c4ee5caef03818b88ec61</string>
-	<key>DATABASE_URL</key>
-	<string>https://social-app-e1319.firebaseio.com</string>
+	<string>1:176366182055:ios:354f94c758251d38fa4582</string>
 </dict>
 </plist>

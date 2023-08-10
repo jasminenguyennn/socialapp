@@ -90,11 +90,11 @@ class PostsViewModel extends ChangeNotifier {
   }
 
   //Functions
-  pickImage({bool camera = false, BuildContext? context}) async {
+  pickImage({bool camera = false, required BuildContext context}) async {
     loading = true;
     notifyListeners();
     try {
-      PickedFile? pickedFile = await picker.getImage(
+      XFile? pickedFile = await picker.pickImage(
         source: camera ? ImageSource.camera : ImageSource.gallery,
       );
       CroppedFile? croppedFile = await ImageCropper().cropImage(

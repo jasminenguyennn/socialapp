@@ -32,44 +32,41 @@ class _ViewImageState extends State<ViewImage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: buildImage(context),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 0.0,
-        color: Colors.transparent,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Container(
-            height: 50.0,
-            width: MediaQuery.of(context).size.width,
-            child: Row(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildImage(context),
+            SizedBox(height: 10.0), // Add some spacing between the image and text
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [ 
                     Text(
                       widget.post!.username!,
                       style: TextStyle(fontWeight: FontWeight.w800),
                     ),
-                    SizedBox(height: 3.0),
-                    Row(
-                      children: [
-                        Icon(Ionicons.alarm_outline, size: 13.0),
-                        SizedBox(width: 3.0),
-                        Text(
-                          timeago.format(widget.post!.timestamp!.toDate()),
-                        ),
-                      ],
+                    buildLikeButton(), // Move the Like button here if needed],
+                ]),
+                SizedBox(height: 1.0),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center, // Align text and icon vertically
+                  children: [
+                    Icon(Ionicons.alarm_outline, size: 13.0),
+                    SizedBox(width: 3.0),
+                    Text(
+                      timeago.format(widget.post!.timestamp!.toDate()),
                     ),
                   ],
                 ),
-                Spacer(),
-                buildLikeButton(),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );

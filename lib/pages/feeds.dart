@@ -15,12 +15,14 @@ class Feeds extends StatefulWidget {
   _FeedsState createState() => _FeedsState();
 }
 
-class _FeedsState extends State<Feeds> with AutomaticKeepAliveClientMixin{
+class _FeedsState extends State<Feeds> with AutomaticKeepAliveClientMixin {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   int page = 5;
   bool loadingMore = false;
   ScrollController scrollController = ScrollController();
+  DateTime? _startDate;
+  DateTime? _endDate;
 
   @override
   void initState() {
@@ -38,7 +40,6 @@ class _FeedsState extends State<Feeds> with AutomaticKeepAliveClientMixin{
 
   @override
   Widget build(BuildContext context) {
-    print('>>>');
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -66,6 +67,11 @@ class _FeedsState extends State<Feeds> with AutomaticKeepAliveClientMixin{
             },
           ),
           SizedBox(width: 20.0),
+          IconButton(
+            icon: Icon(Icons.calendar_today),
+            onPressed: () => _selectDateRange(context),
+          ),
+          SizedBox(width: 20.0),
         ],
       ),
       body: RefreshIndicator(
@@ -91,23 +97,41 @@ class _FeedsState extends State<Feeds> with AutomaticKeepAliveClientMixin{
                     if (snapshot.hasData) {
                       var snap = snapshot.data;
                       List docs = snap!.docs;
+                      // Apply date range filtering
+                      List<PostModel> filteredPosts = docs
+                          .map((doc) => PostModel.fromJson(doc.data()))
+                          .where((post) =>
+        (_startDate == null || post.timestamp!.toDate().isAfter(_startDate!)) &&
+        (_endDate == null || post.timestamp!.toDate().isBefore(_endDate!.add(Duration(days: 1)))))
+                          .toList();
+
+                      if (filteredPosts.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'No Feeds',
+                            style: TextStyle(
+                              fontSize: 26.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                      }
+
                       return ListView.builder(
                         controller: scrollController,
-                        itemCount: docs.length,
+                        itemCount: filteredPosts.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                          PostModel posts =
-                              PostModel.fromJson(docs[index].data());
                           return Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: UserPost(post: posts),
+                            child: UserPost(post: filteredPosts[index]),
                           );
                         },
                       );
                     } else if (snapshot.connectionState ==
                         ConnectionState.waiting) {
                       return circularProgress(context);
-                    } else
+                    } else {
                       return Center(
                         child: Text(
                           'No Feeds',
@@ -117,6 +141,7 @@ class _FeedsState extends State<Feeds> with AutomaticKeepAliveClientMixin{
                           ),
                         ),
                       );
+                    }
                   },
                 ),
               ),
@@ -129,4 +154,23 @@ class _FeedsState extends State<Feeds> with AutomaticKeepAliveClientMixin{
 
   @override
   bool get wantKeepAlive => true;
+
+  void _selectDateRange(BuildContext context) async {
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+      initialDateRange: DateTimeRange(
+        start: DateTime.now().subtract(Duration(days: 7)),
+        end: DateTime.now(),
+      ),
+    );
+
+    if (picked != null && picked.start != null && picked.end != null) {
+      setState(() {
+        _startDate = picked.start;
+        _endDate = picked.end;
+      });
+    }
+  }
 }

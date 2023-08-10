@@ -99,6 +99,17 @@ class PostService extends Service {
     }
   }
 
+  deleteComment(String? postId, String commentId) async {
+    var ref = commentRef.doc(postId).collection("comments").doc(commentId);
+    ref.delete();
+  }
+
+  updateComment(String commentId, String? postId, String newComment) async {
+    commentRef.doc(postId).collection("comments").doc(commentId).update({
+      "comment": newComment,
+      "timestamp": Timestamp.now(),
+    });
+  }
 //add the comment to notification collection
   addCommentToNotification(
       String type,

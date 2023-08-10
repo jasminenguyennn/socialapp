@@ -205,7 +205,22 @@ class PostsViewModel extends ChangeNotifier {
       print(e);
       loading = false;
       resetPost();
-      showInSnackBar('Uploaded successfully!', context);
+      notifyListeners();
+    }
+  }
+
+  deleteComment(BuildContext context, String postId, String commentId) async {
+    try {
+      loading = true;
+      notifyListeners();
+      await postService.deleteComment(postId, commentId);
+      loading = false;
+      resetPost();
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      loading = false;
+      resetPost();
       notifyListeners();
     }
   }

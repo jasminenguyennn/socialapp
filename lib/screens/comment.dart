@@ -237,8 +237,8 @@ class _CommentsState extends State<Comments> {
         CommentModel comments =
             CommentModel.fromJson(snapshot.data() as Map<String, dynamic>);
 
-        bool isCurrentUserCommentOwner =
-            comments.userId == currentUserId(); // Check if the current user owns the comment
+        bool isCurrentUserCommentOwner = comments.userId ==
+            currentUserId(); // Check if the current user owns the comment
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -255,7 +255,8 @@ class _CommentsState extends State<Comments> {
                     children: [
                       CircleAvatar(
                         radius: 20.0,
-                        backgroundImage: CachedNetworkImageProvider(comments.userDp!),
+                        backgroundImage:
+                            CachedNetworkImageProvider(comments.userDp!),
                       ),
                       SizedBox(width: 10.0),
                       Column(
@@ -283,8 +284,7 @@ class _CommentsState extends State<Comments> {
                         IconButton(
                           icon: Icon(Icons.edit),
                           onPressed: () {
-                            // Implement your edit comment logic here
-                            print("Edit comment: ${comments.comment}");
+                            _showEditCommentBottomSheet(snapshot.id, comments.comment!);
                           },
                         ),
                         IconButton(
@@ -293,13 +293,16 @@ class _CommentsState extends State<Comments> {
                           onPressed: () {
                             // Implement your delete comment logic here
                             print("Delete comment: ${comments.comment}");
+                            services.deleteComment(
+                                widget.post!.postId, snapshot.id);
                           },
                         ),
                       ],
                     ),
                 ],
               ),
-              SizedBox(height: 5.0), // Add spacing between comment info and text
+              SizedBox(
+                  height: 5.0), // Add spacing between comment info and text
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -451,5 +454,55 @@ class _CommentsState extends State<Comments> {
                 if (doc.exists) {doc.reference.delete()}
               });
     }
+  }
+
+  _showEditCommentBottomSheet(String commentId, String currentComment) {
+    TextEditingController commentController = TextEditingController(text: currentComment);
+    
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Text('Edit Comment'),
+                  trailing: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: TextField(
+                    controller: commentController,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      hintText: 'Enter your edited comment...',
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                ElevatedButton(
+                  onPressed: () async {
+                    await services.updateComment(commentId, widget.post!.postId, commentController.text);
+                    Navigator.pop(context); // Close the bottom sheet
+                  },
+                  child: Text('Update Comment'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

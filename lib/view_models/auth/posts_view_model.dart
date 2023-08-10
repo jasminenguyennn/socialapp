@@ -117,15 +117,19 @@ class PostsViewModel extends ChangeNotifier {
           IOSUiSettings(
             minimumAspectRatio: 1.0,
           ),
+          WebUiSettings(context: context)
         ],
       );
+      print(pickedFile);
+      print(croppedFile);
       mediaUrl = File(croppedFile!.path);
       loading = false;
       notifyListeners();
     } catch (e) {
+      print(e);
       loading = false;
       notifyListeners();
-      showInSnackBar('Cancelled', context);
+      // showInSnackBar('Cancelled', context);
     }
   }
 
@@ -157,7 +161,43 @@ class PostsViewModel extends ChangeNotifier {
     try {
       loading = true;
       notifyListeners();
-      await postService.uploadPost(mediaUrl!, location!, description!);
+      await postService.uploadPost(
+          mediaUrl!, location ?? "", description ?? "");
+      loading = false;
+      resetPost();
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      loading = false;
+      resetPost();
+      showInSnackBar('Uploaded successfully!', context);
+      notifyListeners();
+    }
+  }
+
+  updatePost(BuildContext context, String uid) async {
+    try {
+      loading = true;
+      notifyListeners();
+      await postService.updatePost(uid,
+          image: mediaUrl, location: location, description: description);
+      loading = false;
+      resetPost();
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      loading = false;
+      resetPost();
+      showInSnackBar('Uploaded successfully!', context);
+      notifyListeners();
+    }
+  }
+
+  deletePost(BuildContext context, String uid) async {
+    try {
+      loading = true;
+      notifyListeners();
+      await postService.deletePost(uid);
       loading = false;
       resetPost();
       notifyListeners();
@@ -196,6 +236,7 @@ class PostsViewModel extends ChangeNotifier {
     mediaUrl = null;
     description = null;
     location = null;
+    locationTEC.clear();
     edit = false;
     notifyListeners();
   }

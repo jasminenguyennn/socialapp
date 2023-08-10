@@ -227,7 +227,6 @@ class _CommentsState extends State<Comments> {
   buildComments() {
     return CommentsStreamWrapper(
       shrinkWrap: true,
-      // padding: const EdgeInsets.symmetric(horizontal: 20.0),
       stream: commentRef
           .doc(widget.post!.postId)
           .collection('comments')
@@ -237,35 +236,10 @@ class _CommentsState extends State<Comments> {
       itemBuilder: (_, DocumentSnapshot snapshot) {
         CommentModel comments =
             CommentModel.fromJson(snapshot.data() as Map<String, dynamic>);
-        // return Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   mainAxisAlignment: MainAxisAlignment.start,
-        //   children: [
-        //     ListTile(
-        //       contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-        //       leading: CircleAvatar(
-        //         radius: 20.0,
-        //         backgroundImage: NetworkImage(comments.userDp!),
-        //       ),
-        //       title: Text(
-        //         comments.username!,
-        //         style: TextStyle(fontWeight: FontWeight.w700),
-        //       ),
-        //       subtitle: Text(
-        //         timeago.format(comments.timestamp!.toDate()),
-        //         style: TextStyle(fontSize: 12.0),
-        //       ),
-        //     ),
-        //     Padding(
-        //       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        //       child: Text(
-        //         comments.comment!,
-        //         style: TextStyle(fontWeight: FontWeight.w400),
-        //       ),
-        //     ),
-        //     Divider()
-        //   ],
-        // );
+
+        bool isCurrentUserCommentOwner =
+            comments.userId == currentUserId(); // Check if the current user owns the comment
+
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
@@ -273,36 +247,77 @@ class _CommentsState extends State<Comments> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 20.0,
-                    backgroundImage: CachedNetworkImageProvider(comments.userDp!),
-                  ),
-                  SizedBox(width: 10.0),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        comments.username!,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.0,
-                        ),
+                      CircleAvatar(
+                        radius: 20.0,
+                        backgroundImage: CachedNetworkImageProvider(comments.userDp!),
                       ),
-                      Text(
-                        timeago.format(comments.timestamp!.toDate()),
-                        style: TextStyle(fontSize: 10.0),
+                      SizedBox(width: 10.0),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            comments.username!,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14.0,
+                            ),
+                          ),
+                          Text(
+                            timeago.format(comments.timestamp!.toDate()),
+                            style: TextStyle(fontSize: 10.0),
+                          ),
+                        ],
                       ),
                     ],
-                  )
+                  ),
+                  if (isCurrentUserCommentOwner) // Display edit and delete buttons for current user's comments
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            // Implement your edit comment logic here
+                            print("Edit comment: ${comments.comment}");
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          color: Theme.of(context).colorScheme.error,
+                          onPressed: () {
+                            // Implement your delete comment logic here
+                            print("Delete comment: ${comments.comment}");
+                          },
+                        ),
+                      ],
+                    ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 50.0),
-                child: Text( comments.comment!.trim()),
+              SizedBox(height: 5.0), // Add spacing between comment info and text
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 50.0),
+                      child: Text(comments.comment!.trim()),
+                    ),
+                  ),
+                  if (!isCurrentUserCommentOwner) // Display edit and delete buttons for other users' comments
+                    IconButton(
+                      icon: Icon(Icons.report),
+                      onPressed: () {
+                        // Implement your report comment logic here
+                        print("Report comment: ${comments.comment}");
+                      },
+                    ),
+                ],
               ),
               SizedBox(height: 10.0),
             ],

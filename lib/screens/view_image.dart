@@ -9,6 +9,7 @@ import 'package:social_media_app/models/user.dart';
 import 'package:social_media_app/utils/firebase.dart';
 import 'package:social_media_app/widgets/indicators.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:social_media_app/posts/update_post.dart';
 
 class ViewImage extends StatefulWidget {
   final PostModel? post;
@@ -31,31 +32,48 @@ class _ViewImageState extends State<ViewImage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Padding(
+    appBar: AppBar(
+      actions: [
+        if (widget.post != null && widget.post!.ownerId == currentUserId()) // Check if the post belongs to the current user
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              // Add your edit post logic here
+              print("Edit post");
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (_) => UpdatePost(widget.post),
+                ),
+              );
+            },
+          ),
+      ],
+    ),body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             buildImage(context),
-            SizedBox(height: 10.0), // Add some spacing between the image and text
+            SizedBox(
+                height: 10.0), // Add some spacing between the image and text
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [ 
-                    Text(
-                      widget.post!.username!,
-                      style: TextStyle(fontWeight: FontWeight.w800),
-                    ),
-                    buildLikeButton(), // Move the Like button here if needed],
-                ]),
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.post!.username!,
+                        style: TextStyle(fontWeight: FontWeight.w800),
+                      ),
+                      buildLikeButton(), // Move the Like button here if needed],
+                    ]),
                 SizedBox(height: 1.0),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center, // Align text and icon vertically
+                  crossAxisAlignment: CrossAxisAlignment
+                      .center, // Align text and icon vertically
                   children: [
                     Icon(Ionicons.alarm_outline, size: 13.0),
                     SizedBox(width: 3.0),

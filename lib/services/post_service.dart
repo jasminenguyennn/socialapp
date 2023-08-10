@@ -23,11 +23,13 @@ class PostService extends Service {
 //uploads post to the post collection
   uploadPost(File image, String location, String description) async {
     String link = await uploadImage(posts, image);
+    print("Upload post");
     DocumentSnapshot doc =
         await usersRef.doc(firebaseAuth.currentUser!.uid).get();
     user = UserModel.fromJson(
       doc.data() as Map<String, dynamic>,
     );
+    print(link);
     var ref = postRef.doc();
     ref.set({
       "id": ref.id,
@@ -39,6 +41,41 @@ class PostService extends Service {
       "location": location ?? "Green Horizon",
       "timestamp": Timestamp.now(),
     }).catchError((e) {
+      print(e);
+    });
+  }
+
+//uploads post to the post collection
+  deletePost(String uid) async {
+    DocumentSnapshot doc =
+        await usersRef.doc(firebaseAuth.currentUser!.uid).get();
+    var ref = postRef.doc(uid);
+    ref.delete();
+  }
+
+//uploads post to the post collection
+  updatePost(String uid,
+      {File? image, String? location, String? description}) async {
+    Map<String, Object> data = {};
+    if (image != null) {
+      String link = await uploadImage(posts, image);
+      data["mediaUrl"] = link;
+    }
+
+    if (location != null) {
+      data["location"] = location;
+    }
+    if (description != null) {
+      data["description"] = description;
+    }
+
+    DocumentSnapshot doc =
+        await usersRef.doc(firebaseAuth.currentUser!.uid).get();
+    user = UserModel.fromJson(
+      doc.data() as Map<String, dynamic>,
+    );
+    var ref = postRef.doc(uid);
+    ref.update(data).catchError((e) {
       print(e);
     });
   }

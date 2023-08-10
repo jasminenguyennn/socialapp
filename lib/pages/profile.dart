@@ -367,7 +367,14 @@ class _ProfileState extends State<Profile> {
                               );
                             },
                             icon: Icon(Ionicons.grid_outline),
-                          )
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              showDeleteConfirmationDialog(); // Show delete confirmation dialog
+                            },
+                            icon: Icon(Icons.delete_outline),
+                            color: Theme.of(context).colorScheme.error
+                          ),
                         ],
                       ),
                     ),
@@ -610,5 +617,55 @@ class _ProfileState extends State<Profile> {
         return Container();
       },
     );
+  }
+
+  deleteAllImages() async {
+    QuerySnapshot postSnapshot = await postRef
+        .where('ownerId', isEqualTo: widget.profileId)
+        .get();
+
+    for (QueryDocumentSnapshot doc in postSnapshot.docs) {
+      PostModel post = PostModel.fromJson(doc.data() as Map<String, dynamic>);
+      if (post.mediaUrl != null) {
+        // Delete image from storage (you should implement this)
+        // Example: await deleteImageFromStorage(post.mediaUrl);
+      }
+      // Delete the post from Firestore
+      await postRef.doc(post.postId!).delete();
+    }
+  }
+
+  showDeleteConfirmationDialog() async {
+    bool confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete All Images"),
+          content: Text("Are you sure you want to delete all images?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false); // Don't confirm delete
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, true); // Confirm delete
+              },
+              child: Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmDelete == true) {
+      await deleteAllImages();
+      // Show a snackbar or any feedback to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("All images deleted")),
+      );
+    }
   }
 }
